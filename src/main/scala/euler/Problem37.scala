@@ -11,29 +11,22 @@ object Problem37 {
   // NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes.
 
   def isRightTruncatablePrime (n: Long): Boolean = {
-    propertyHolds(n, _.isPrime, truncateRight)
+    propertyHolds(n, _.isPrime, truncate(_.init))
   }
 
   def isLeftTruncatablePrime (n: Long): Boolean = {
-    propertyHolds(n, _.isPrime, truncateLeft)
+    propertyHolds(n, _.isPrime, truncate(_.substring(1)))
   }
 
-  def truncateRight (n: Long): Option[Long] = {
-    val truncated = n.toString.init
+  def truncate (truncateFn: String => String) (n: Long): Option[Long] = {
+    val truncated = truncateFn(n.toString)
     truncated match {
       case "" => None
       case _ => Some(truncated.toLong)
     }
   }
 
-  def truncateLeft (n: Long): Option[Long] = {
-    val truncated = n.toString.substring(1)
-    truncated match {
-      case "" => None
-      case _ => Some(truncated.toLong)
-    }
-  }
-
+  @scala.annotation.tailrec
   def propertyHolds (n: Long, property: Long => Boolean, reduceFn: Long => Option[Long]): Boolean = {
     property(n) && (reduceFn(n) match {
       case Some(reduced) => propertyHolds(reduced, property, reduceFn)
