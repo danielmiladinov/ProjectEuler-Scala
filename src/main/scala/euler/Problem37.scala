@@ -10,11 +10,23 @@ object Problem37 {
   // Find the sum of the only eleven primes that are both truncatable from left to right and right to left.
   // NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes.
 
-  def isRightTruncatablePrime (n: Long): Boolean = {
+  def solution (): Long = {
+    import euler.tools.NumberUtilities
+    val longs = new NumberUtilities[Long]()
+
+    // skip 2, 3, 5, and 7; next prime is 11
+    longs.primes(11L)
+      .filter(isRightTruncatable)
+      .filter(isLeftTruncatable)
+      .take(11)
+      .sum
+  }
+
+  def isRightTruncatable (n: Long): Boolean = {
     propertyHolds(n, _.isPrime, truncate(_.init))
   }
 
-  def isLeftTruncatablePrime (n: Long): Boolean = {
+  def isLeftTruncatable (n: Long): Boolean = {
     propertyHolds(n, _.isPrime, truncate(_.substring(1)))
   }
 
